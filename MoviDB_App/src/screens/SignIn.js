@@ -3,6 +3,7 @@ import {StyleSheet,Text,View,TouchableOpacity,TextInput,Alert} from 'react-nativ
 import firebase from '../../FireStore';
 import 'firebase/firebase-firestore';
 import 'firebase/firebase-auth';
+import ProfileStackNavigator from '../routes/StackNavigation';
 
 
 export default function SignIn({navigation})
@@ -33,7 +34,7 @@ function LoginControl(username,password,{navigation}){
                     firebase.auth().signInWithEmailAndPassword(doc.data().E_mail,doc.data().Password);
                     firebase.auth().onAuthStateChanged(function(user){
                         if(user){
-                            navigation.navigate("User Screen");
+                            navigation.navigate('DrawerNavigator');
                         }
                         else{
                         }   

@@ -23,7 +23,7 @@ function loginCheck()
                 <Text style={styles.textStyle} >Sign Up</Text> 
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttons} onPress={()=>navigation.navigate('User Screen')}>
-                <Text style={styles.textStyle} >Continue Without Login</Text> 
+                <Text style={styles.textStyle} >Continue As Login</Text> 
             </TouchableOpacity>
         </View>
     );

@@ -1,11 +1,15 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import LogOut from '../screens/Logout';
+import TabNavigation from "./TabNavigation";
 
-import {AuthStateNavigator,ProfileStackNavigator} from '../routes/StackNavigation';
+
+import {AuthStateNavigator,ProfileStackNavigator} from './StackNavigation';
+
 const drawer = createDrawerNavigator();
 const GuestDrawerNavigator = () => {
     return (
@@ -14,10 +18,10 @@ const GuestDrawerNavigator = () => {
         </drawer.Navigator>
     );
   };
-  const UserDrawerNavigator = () => {
+const UserDrawerNavigator = () => {
     return (
         <drawer.Navigator initialRouteName="User Screen">
-            <drawer.Screen name='User Screen' component={ProfileStackNavigator}/>
+            <drawer.Screen name='User Screen' component={TabNavigation}/>
             <drawer.Screen name="Log out." component={LogOut} />
         </drawer.Navigator>
     );
