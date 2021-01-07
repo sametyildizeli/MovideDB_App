@@ -2,17 +2,6 @@ import React from 'react'
 import {StyleSheet,Text,View,TouchableOpacity} from 'react-native';
 
 export default function HomeScreen({navigation}){
-function loginCheck()
-  {
-    firebase.auth().onAuthStateChanged((user)=>{
-      if(user){
-      return true;
-      }
-      else{
-        return false;
-      }
-  });
-  }
     return(
         <View style={styles.container}>
             <Text style={styles.title}>MovieDB App</Text>
@@ -23,7 +12,7 @@ function loginCheck()
                 <Text style={styles.textStyle} >Sign Up</Text> 
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttons} onPress={()=>navigation.navigate('User Screen')}>
-                <Text style={styles.textStyle} >Continue As Login</Text> 
+                <Text style={styles.textStyle} >Continue As A Guest</Text> 
             </TouchableOpacity>
         </View>
     );

@@ -1,11 +1,63 @@
 import React,{useState} from 'react';
 import {StyleSheet,Text,View,TextInput,ScrollView,Image,TouchableHighlight,Modal} from 'react-native';
 import axios from 'axios';
+import firebase from '../../FirebaseConnection';
+import Asyncstorage from '@react-native-community/async-storage';
 
 
 
 export default function UserScreen({navigation})
 {
+function addToList(movieId)
+{
+    firebase.firestore().collection("Users").doc(name).get().then(function(doc)
+    {
+        if(doc.exists)
+        {
+            if(doc.data().Movies==""){
+            firebase.firestore().collection("Users").doc(name).set(
+                {
+                    Name:doc.data().Name,
+                    E_mail:doc.data().E_mail,
+                    Password:doc.data().Password,
+                    Movies:movieId,
+                });
+            }
+            else
+            {
+                firebase.firestore().collection("Users").doc(name).set(
+                    {
+                        Name:doc.data().Name,
+                        E_mail:doc.data().E_mail,
+                        Password:doc.data().Password,
+                        Movies:doc.data().Movies+","+movieId,
+                    });
+            }
+        }
+    });
+    setState(prevState=>{
+        return{...prevState,selected:{}}
+    })
+    
+}
+    const load=async()=>{
+        try{
+            let name=await Asyncstorage.getItem("Username");
+            if(name!==null){
+                setName(name);
+            }
+        }
+        catch(error)
+        {
+            //Alert.alert(error);
+        }
+    }
+    const [name,setName]=useState();
+    load();
+
+
+
+    const user =firebase.auth().currentUser;
     const apiUrl= "http://www.omdbapi.com/?&apikey=ecf1f365";
     const [state,setState] = useState({
         s:"Enter a movie...",
@@ -40,7 +92,7 @@ export default function UserScreen({navigation})
             <ScrollView style={styles.scrollView}>
                 {state.results.map(result=>{
                     return(
-                    <TouchableHighlight key={result.imdbID} onPress={()=>openMovieInfo(result.imdbID)}>
+                    <TouchableHighlight underlayColor='#223343' key={result.imdbID} onPress={()=>openMovieInfo(result.imdbID)}>
                     <View style={styles.result}>
                                 <Image
                                 source={{uri:result.Poster}}
@@ -66,13 +118,33 @@ export default function UserScreen({navigation})
                     <Text style={{marginBottom:20}}>Rating:{state.selected.imdbRating}</Text>
                     <Text>{state.selected.Plot}</Text>
                 </View>
-                <TouchableHighlight
+                {user==null ?(
+                    <>
+                <TouchableHighlight underlayColor='#223343'
                 onPress={()=>setState(prevState=>{
                     return{...prevState,selected:{}}
                 })}
                 >
-                    <Text style={styles.closeBtn}>Close</Text>
+                    <Text style={styles.modalBtn}>Close</Text>
                 </TouchableHighlight>
+                    </>
+                ):(
+                    <>
+                    <TouchableHighlight underlayColor='#223343'
+                onPress={()=>addToList(state.selected.imdbID)}
+                >
+                    <Text style={styles.modalBtn}>Add To My List</Text>
+                </TouchableHighlight>
+                    <TouchableHighlight underlayColor='#223343'
+                onPress={()=>setState(prevState=>{
+                    return{...prevState,selected:{}}
+                })}
+                >
+                    <Text style={styles.modalBtn}>Close</Text>
+                </TouchableHighlight>
+                </>
+                )}
+            
             </Modal>
         </View>
     );
@@ -147,13 +219,15 @@ const styles =StyleSheet.create(
             fontWeight:'700',
             marginBottom:5,
         },
-        closeBtn:{
+        modalBtn:{
+            textAlign:'center',
+            alignSelf:'center',
+            width:'50%',
+            marginBottom:10,
             padding:20,
             fontSize:20,
             color:'#FFF',
             fontWeight:'700',
             backgroundColor:'#708090'
         }
-
-
     });
